@@ -1,5 +1,7 @@
 import SellerModel from '../model/seller/Seller.model.js'
 import bcrypt, { hash } from 'bcrypt';
+import ENV from '../config.js';
+import jwt from 'jsonwebtoken';
 /*
 {
   "username" : "hello",
@@ -11,6 +13,7 @@ import bcrypt, { hash } from 'bcrypt';
   "tel" : "0210001110"
 }
 */
+
 // post request
 export async function register(req, res) {
     try {
@@ -22,7 +25,6 @@ export async function register(req, res) {
             SellerModel.findOne({ username })       
             .then((username) => {
                 if (username) reject({ error : "Please provide a unique username" });
-                console.log(username);
                 resolve();
             }).catch((err) => {
                 if (err) reject(new Error(err));
@@ -99,14 +101,22 @@ export async function login(req, res) {
      try {
         SellerModel.findOne({ username })
         .then((user) => {
+            
             bcrypt.compare(password, user.password)
             .then(match => {
                 if (!match) return res.status(400).send({ error : "invalid password!"});
 
                 // create jwt token
-                
+                const token = jwt.sign({
+                    userId : user._id,
+                    username : user.username,
+                }, ENV.JWT_SECRET, { expiresIn : "24h"});
 
-
+                return res.status(200).send({
+                    msg : "Login successful",
+                    username : user.username,
+                    token,
+                })
             })
             .catch((error) => {
                 return res.status(400).send({ error: error.message });
@@ -125,7 +135,24 @@ export async function login(req, res) {
 
 // get request
 export async function getUser(req, res) {
-    res.status(201).json('Get User Request');
+    const { username } = req.params;
+    try {
+        if (!username) return res.status(501).send({ error : "Invalid username" });
+        SellerModel.findOne({ username })
+        .then((user) => {
+            if(!user) return res.status(501).send({ error : "User not found" });
+
+            // remove password from object 
+            // mongoose return data with object convert into json
+            const { password, ...rest } = Object.assign({}, user.toJSON());
+            return res.status(201).send(rest);
+
+        }).catch((error) => {
+            return res.status(500).send({ error : error.message });
+        })
+    } catch (error) {
+        return res.status(404).send({ error: error.message });    
+    }
 }
 
 
@@ -144,7 +171,25 @@ export async function createResetSession(req, res) {
 
 // put request
 export async function updateUser(req, res) {
-    
+    try {
+        const id = req.query.id;
+        if (id) {
+            const body = req.body;
+
+            SellerModel.updateOne({_id: id}, body)
+            .then((user) => {
+                return res.status(201).send({ msg: 'User updated successfully'});
+            })
+            .catch((error) => {
+                console.log(error);
+                return res.status(500).send({ error: error.message });
+            });
+        } else {
+            res.status(500).send({ msg : "Not Found id" });
+        }
+    } catch (error) {
+        return res.status(401).send({ error : error.message });
+    }
 }
 
 export async function resetPassword(req, res) {
