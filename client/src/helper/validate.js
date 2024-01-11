@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-
+import validator from "validator";
 export async function usernameValidate (values) {
     const errors = usernameVerify({}, values);
     passwordVerify(errors, values);
@@ -54,11 +54,14 @@ function passwordVerify (error = {},  values) {
 }
 
 function registerVerify (error = {},  values) {
-    if (!values.email || !values.tel || !values.fistName || !values.lastName) {
+    if (!values.email && !values.tel && !values.fistName && !values.lastName) {
         error.username = toast.error('All form required to filed');
-    } else if (values.email.includes(" ") || values.tel.includes(" ") || values.fistName.includes(" ") || values.lastName.includes(" ")) {
+    } else if (
+    (values.email && values.email.includes(" ")) ||
+    (values.fistName && values.fistName.includes(" ")) ||
+    (values.lastName && values.lastName.includes(" "))) {
         error.username = toast.error('Information Invalid');
-    } else if (!/^[A-Z0-9._+-]+@[A-Z0-9.-]+\.[A-Z][2,4]$/i.test(values.email)) {
+    } else if (!(validator.isEmail(values.email))) {
         error.email =toast.error('Email Invalid');
     }
  

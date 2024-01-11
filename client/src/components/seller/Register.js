@@ -1,6 +1,5 @@
 import React from 'react'
-import { useState, useEffect, useNavigate } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from "react-hot-toast"; // handles warning messages
 
@@ -30,29 +29,14 @@ export default function Register() {
         validateOnChange : false,
         onSubmit : async values => {
             console.log(values);
-
-            // check unique values
-            axios.get(`http://localhost:8000/seller/register`, values)
+            axios.post(`http://localhost:8000/seller/register`, values)
             .then(res => {
-                console.log(res.data);
-
-                if (res.data == undefined) {
-                    axios.post(`http://localhost:8000/seller/register`, values)
-                    .then(res => {
-                        console.log('Seller register successful');
-                        toast.success('Register successful');
-                        navigate("/login");
-                    }).catch(err => {
-                        console.log('Error post method' + err.response.data);
-                    })
-                } else {
-                    toast.error('Information already registered');
-                }
-
-                
-            }).catch(err => {
-                console.log('Error post method' + err.response.data);
-            });
+                console.log('Seller register successful');
+                toast.success('Register successful');
+                navigate("/login");
+            }).catch((err, msg)=> {
+                console.log('Error post method' + ' ' + err + ' ' + msg);
+            })
         }
     })
   return (
@@ -74,7 +58,7 @@ export default function Register() {
                         <input {...formik.getFieldProps('password')} type='password' placeholder='password' className='shadow-md rounded-md w-5/6 text-lg'></input><br/>
                         <input {...formik.getFieldProps('firstName')} type='text' placeholder='First Name' className='shadow-md rounded-md w-5/6 text-lg'></input><br/>
                         <input {...formik.getFieldProps('lastName')} type='text' placeholder='Last Name' className='shadow-md rounded-md w-5/6 text-lg'></input><br/>
-                        <input {...formik.getFieldProps('email')} type='email' placeholder='email' className='shadow-md rounded-md w-5/6 text-lg'></input><br/>
+                        <input {...formik.getFieldProps('email')} type='text' placeholder='email' className='shadow-md rounded-md w-5/6 text-lg'></input><br/>
                         <input {...formik.getFieldProps('tel')} type='number' placeholder='telephone number' className='shadow-md rounded-md w-5/6 text-lg'></input><br/>
                         <input {...formik.getFieldProps('store')} type='text' placeholder='store name' className='shadow-md rounded-md w-5/6 text-lg'></input><br/>
                         <button type='submit' className='m-1 p-2 rounded-md shadow-md bg-amber-100 hover:bg-sky-500' style={{width: "80%"}}>Sign Up</button>
