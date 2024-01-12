@@ -28,14 +28,16 @@ export default function Register() {
         validateOnBlur : false,
         validateOnChange : false,
         onSubmit : async values => {
-            console.log(values);
-            axios.post(`http://localhost:8000/seller/register`, values)
+            // console.log(values);
+            axios.post('http://localhost:8000/seller/register', values)
             .then(res => {
                 console.log('Seller register successful');
                 toast.success('Register successful');
                 navigate("/login");
-            }).catch((err, msg)=> {
-                console.log('Error post method' + ' ' + err + ' ' + msg);
+            }).catch((error)=> {
+                const errorMsg = error.response.data.error.error;
+                toast.error(errorMsg);
+                // console.log('Error post method' + ' ' + error.response.data.error.error);
             })
         }
     })

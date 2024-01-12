@@ -24,8 +24,9 @@ export async function register(req, res) {
         // check exist information
         const existUsername =  new Promise((resolve, reject) => {
             SellerModel.findOne({ username })       
-            .then((username) => {
-                if (username) reject({ error : "Please provide a unique username" });
+            .then((user) => {
+                console.log(user);
+                if (user) reject({ error : "Please provide a unique username" });
                 resolve();
             }).catch((err) => {
                 if (err) reject(new Error(err));
@@ -90,10 +91,12 @@ export async function register(req, res) {
                     })
                 }
             }).catch (error => {
+                console.log(error);
                 return res.status(500).send({ error });
             })
     } catch (error) {
-        return res.status(500).send({ error: error.message });
+        console.log(error);
+        return res.status(500).send({ error });
     }
 }
 
@@ -102,7 +105,7 @@ export async function login(req, res) {
      try {
         SellerModel.findOne({ username })
         .then((user) => {
-            
+            console.log(username);
             bcrypt.compare(password, user.password)
             .then(match => {
                 if (!match) return res.status(400).send({ error : "invalid password!"});

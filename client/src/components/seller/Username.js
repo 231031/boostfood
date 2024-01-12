@@ -1,17 +1,28 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios';
 // error display handlers
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 
 // use with form handlers
 import { useFormik } from 'formik';
 import { usernameValidate } from '../../helper/validate';
 
-// import style from '../../style/Username.module.css'
+import { useAuthStore } from '../../store/store.js';
+
+import * as api from '../../helper/helper.js';
+
 
 export default function Username() {
+    const [msg, setMsg] = useState("");
+    const [token, setToken] = useState("");
+    const navigate = useNavigate();
+
+    // access username from every components
+    const setUsername = useAuthStore(state => state.setUsername);
+    
+
 
     const formik = useFormik({
         initialValues : {
@@ -22,7 +33,22 @@ export default function Username() {
         validateOnBlur : false,
         validateOnChange : false,
         onSubmit : async values => {
-            console.log(values);
+            setUsername(values.username);
+            const username = values.username;
+            const password = values.password;
+            axios.post('http://localhost:8000/seller/login', { username, password })
+            .then((res) => {
+                console.log(res);
+                setToken(res.data.token);
+                if (token !== '') {
+                    toast.success(msg);
+                    navigate('/addfood', { username, token });
+                }
+                // return Promise.resolve({ data });
+            }).catch(err => {
+                console.log(err);
+            });
+           
         }
     })
   return (
