@@ -48,7 +48,7 @@ export async function loginUser({ username, password }) {
         console.log(username);
         if (username) {
             await axios.post('http://localhost/8000/seller/login', { username, password })
-            .then(([data, status]) => {
+            .then((data) => {
                 console.log(data);
                 return Promise.resolve({ data });
             }).catch(err => {

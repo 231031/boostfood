@@ -6,7 +6,15 @@ import convertToBase64 from '../../helper/convert';
 import { addFoodValidate } from '../../helper/validate';
 import uploadFood from '../../assets/uploadFood.png';
 
+import useFetch from '../../hooks/fetch.hook.js';
+import { useAuthStore } from '../../store/store';
+
 export default function Addfood() {
+
+    // const { username } = useAuthStore(state => state.auth);
+
+    // get user data
+    // const [{ isLoading, apiData, serverError }] = useFetch(`/users/${username}`);
 
     const [file, setFile] = useState();
 
@@ -23,10 +31,13 @@ export default function Addfood() {
         validateOnChange : false,
         onSubmit : async values => {
             // create new property inside values object
-            values = await Object.assign(values, {foodImage : file} || '');
+            values = Object.assign(values, {foodImage : file} || '');
             console.log(values);
         }
     })
+
+    // if (isLoading) return <h1 className='text-md font-bold'>isLoading</h1>
+    // if (serverError) return <h1 className='text-md text-red-500'>{serverError.message}</h1>
 
     // formik not support upload files
     const onUpload = async (e) => {

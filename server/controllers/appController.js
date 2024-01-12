@@ -105,7 +105,7 @@ export async function login(req, res) {
      try {
         SellerModel.findOne({ username })
         .then((user) => {
-            console.log(username);
+            console.log(user);
             bcrypt.compare(password, user.password)
             .then(match => {
                 if (!match) return res.status(400).send({ error : "invalid password!"});
@@ -123,15 +123,15 @@ export async function login(req, res) {
                 })
             })
             .catch((error) => {
-                return res.status(400).send({ error: error.message });
+                return res.status(400).send({ error });
             })
         })
         .catch((error) => {
-            return res.status(404).send({ error : error.message });
+            return res.status(404).send({ error });
         })
 
-     } catch (err) {
-
+     } catch (error) {
+        return res.status(400).send({ error });
      }
 }
 

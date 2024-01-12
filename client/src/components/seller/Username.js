@@ -11,7 +11,7 @@ import { usernameValidate } from '../../helper/validate';
 
 import { useAuthStore } from '../../store/store.js';
 
-import * as api from '../../helper/helper.js';
+// import * as api from '../../helper/helper.js';
 
 
 export default function Username() {
@@ -40,13 +40,16 @@ export default function Username() {
             .then((res) => {
                 console.log(res);
                 setToken(res.data.token);
+                setMsg(res.data.msg);
                 if (token !== '') {
                     toast.success(msg);
-                    navigate('/addfood', { username, token });
+                    navigate('/addfood');
                 }
                 // return Promise.resolve({ data });
-            }).catch(err => {
-                console.log(err);
+            }).catch(error => {
+                const errorMsg = error.response.data.error;
+                toast.error(errorMsg);
+                console.log(errorMsg);
             });
            
         }
