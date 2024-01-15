@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
+import React, { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 
 import convertToBase64 from '../../helper/convert';
@@ -7,17 +7,14 @@ import { addFoodValidate } from '../../helper/validate';
 import uploadFood from '../../assets/uploadFood.png';
 
 import useFetch from '../../hooks/fetch.hook.js';
-import { useAuthStore } from '../../store/store';
+
 
 export default function Addfood() {
 
-    // const { username } = useAuthStore(state => state.auth);
-
     // get user data
-    // const [{ isLoading, apiData, serverError }] = useFetch(`/users/${username}`);
+    const [{ isLoading, apiData, serverError }] = useFetch();
 
     const [file, setFile] = useState();
-
     const formik = useFormik({
         initialValues : {
             store: '',
@@ -33,11 +30,13 @@ export default function Addfood() {
             // create new property inside values object
             values = Object.assign(values, {foodImage : file} || '');
             console.log(values);
+
+
         }
     })
 
-    // if (isLoading) return <h1 className='text-md font-bold'>isLoading</h1>
-    // if (serverError) return <h1 className='text-md text-red-500'>{serverError.message}</h1>
+    if (isLoading) return <h1 className='text-md font-bold'>isLoading</h1>
+    if (serverError) return <h1 className='text-md text-red-500'>{serverError.message}</h1>
 
     // formik not support upload files
     const onUpload = async (e) => {
@@ -53,7 +52,7 @@ export default function Addfood() {
                 <div className='title flex flex-col items-center '>
                     <h4 className='text-4xl font-bold'>Boost Food</h4>
                     <span className='py-4 text-xl text-center text-gray-500'>
-                        Welcome to BoostFood
+                        Welcome {apiData?.firstName}
                     </span>
                 </div>
 

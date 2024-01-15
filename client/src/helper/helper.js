@@ -1,6 +1,27 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import {jwtDecode} from 'jwt-decode';
+// import { useNavigate } from 'react-router-dom';
+
 axios.defaults.baseURL = process.env.APP_SERVER_DOMAIN;
+
+// function userLogout() {
+//     const navigate = useNavigate();
+//     localStorage.removeItem('token');
+//     navigate('/');
+// }
+
+export async function getUsername() {
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        return Promise.reject("Cannot find token");
+    }
+
+    let decode = jwtDecode(token);
+    return decode;
+}
+
 export async function authenticate(username) {
     try {
         return await axios.post('seller/register', { username });
@@ -11,7 +32,7 @@ export async function authenticate(username) {
 
 export async function getUser({ username }) {
     try {
-        const { data } = await axios.get(`seller/user/${username}`);
+        const { data } = await axios.get(`http://localhost:8000/seller/user/${username}`);
         return { data };
     } catch (err) {
         return { err : err };
@@ -20,13 +41,7 @@ export async function getUser({ username }) {
 
 export async function registerUser(information) {
     try {
-        const { data : { msg }, status } = await axios.post(`seller/register`, information)
-        .then(() => {
-
-        })
-        .catch(err => {
-            console.log(err);
-        });
+        const { data : { msg }, status } = await axios.post(`http://localhost:8000/seller/register`, information)
         let { username, email } = information;
         if (status === 201) {
             await axios.post(`seller/registerMail`, { username, userEmail : email})
@@ -47,12 +62,13 @@ export async function loginUser({ username, password }) {
     try {
         console.log(username);
         if (username) {
-            await axios.post('http://localhost/8000/seller/login', { username, password })
-            .then((data) => {
+            axios.post('http://localhost:8000/seller/login', { username, password })
+            .then(({data}) => {
                 console.log(data);
                 return Promise.resolve({ data });
-            }).catch(err => {
-                console.log(err);
+            }).catch(error => {
+                console.log(error);
+                return Promise.reject(error);
             });
             
         }
@@ -75,11 +91,13 @@ export async function updateUser(information) {
 
 export async function generateOTP({ username }) {
     try {
-        const { data : { code }, status } = await axios.get('seller/generateOTP', { params : { username: username}});
+        console.log(username);  
+        const { data : { code }, status } = await axios.get('http://localhost:8000/seller/generateOTP', { params : { username }});
         if (status === 201 ) {
             let { data : email } = await getUser({ username });
+            console.log(email);
             let text = `Your Password Recovery OTP: ${code}`;
-            await axios.post('seller/registerMail', { username, userEmail : email, text, subject: "Password recovery "});
+            await axios.post('http://localhost:8000/seller/registerMail', { username, userEmail : email, text, subject: "Password recovery "});
         }
         return Promise.resolve(code);
     } catch (error) {
@@ -89,7 +107,7 @@ export async function generateOTP({ username }) {
 
 export async function verifyOTP({ username, code }) {
     try {
-        const { data, status } = await axios.get('seller/verifyOTP', { username, code });
+        const { data, status } = await axios.get('seller/verifyOTP', { params : { username, code }});
         return {data, status };
     } catch (error) {
         return Promise.reject({ error });
@@ -98,7 +116,7 @@ export async function verifyOTP({ username, code }) {
 
 export async function resetPassword({ username, password }) {
     try {
-        const { data, status } = await axios.put('seller/resetPassword', { username, password });
+        const { data, status } = await axios.put('http://localhost:8000/seller/resetPassword', { username, password });
         return Promise.resolve({ data, status });
     } catch (error) {
         return Promise.reject({ error });

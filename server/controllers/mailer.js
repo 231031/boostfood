@@ -41,7 +41,9 @@ import mailgen from 'mailgen';
 export async function sendMail(req, res) {
 
     // find from database by using username
-    const { userEmail } = req.body;
+    const { username, userEmail, text, subject } = req.body;
+    
+    // console.log(userEmail);
 
     let config = {
         service : 'gmail',
@@ -63,28 +65,27 @@ export async function sendMail(req, res) {
 
     let response = {
         body : {
-            name : "User",
-            intro : "Your OTP code to reset password",
-            table : {
-                data : {
-                    OTP : req.app.locals.OTP
-                }
+            body : {
+                name: userEmail,
+                intro : text || 'Welcome to Daily Tuition! We\'re very excited to have you on board.',
+                outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
             }
         }
     }
 
     let mail = MailGenerator.generate(response);
     let message = {
-        form : ENV.EMAIL,
-        to : userEmail,
-        subject : "Your OTP code to reset password",
+        from : ENV.EMAIL,
+        to: userEmail,
+        subject : subject || "Signup Successful",
         html : mail
     }
     transporter.sendMail(message)
     .then(() => {
-        return res.status(201).json({ msg : "Mail already send" });
+        return res.status(201).send({ msg : "Mail already send" });
     })
     .catch(err => {
-        return res.status(500).json({err: err.message });
+        console.log(err);
+        return res.status(500).send({ err });
     });
 }

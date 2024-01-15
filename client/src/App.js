@@ -9,6 +9,8 @@ import Pagenotfound from './components/Pagenotfound';
 import Reset from './components/seller/Reset';
 import Addfood from './components/seller/Addfood';
 
+// auth middleware
+import { AuthorizeUser } from './middleware/auth';
 // root routes
 const router =createBrowserRouter(
   [
@@ -30,7 +32,7 @@ const router =createBrowserRouter(
     },
     {
       path: '/addfood',
-      element : <Addfood></Addfood>
+      element : <AuthorizeUser><Addfood /></AuthorizeUser>
     },
     {
       path: '*',

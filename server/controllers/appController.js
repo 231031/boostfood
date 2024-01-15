@@ -162,7 +162,9 @@ export async function getUser(req, res) {
 
 export async function generateOTP(req, res) {
     req.app.locals.OTP = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+    console.log(req.app.locals.OTP);
     res.status(201).send({ code : req.app.locals.OTP });
+    
 }
 
 // use request query
@@ -181,8 +183,7 @@ export async function verifyOTP(req, res) {
 // successfully redirect to reset password user when OTP is valid
 export async function createResetSession(req, res) {
     if (req.app.locals.resetSession) {
-        req.app.locals.resetSession = false;
-        return res.status(201).send({ msg : "access" });
+        return res.status(201).send({ flag : req.app.locals.resetSession})
     }
     return res.status(440).send({ error : "Session Expired" });
 }
@@ -233,21 +234,21 @@ export async function resetPassword(req, res) {
                         return res.status(201).send({ msg : "Password Updated" });
                     })
                     .catch((error) => {
-                        return res.status(error.statusCode).send({ error : error.message });
+                        return res.status(error.statusCode).send({ error });
                     });
                 })
                 .catch((error) => {
-                    return res.status(500).send({ error : error.message });
+                    return res.status(500).send({ error });
                 });
             })
             .catch((error) => {
-                return res.status(404).send({ error : error.message });
+                return res.status(404).send({ error });
             })
         } catch (error) {
-            return res.status(500).send({ error : error.message });
+            return res.status(500).send({ error });
         }
     } catch (error) {
-        return res.status(401).send({ error : error.message });
+        return res.status(401).send({ error });
     }
 }
 

@@ -1,5 +1,4 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 // error display handlers
@@ -10,13 +9,10 @@ import { useFormik } from 'formik';
 import { usernameValidate } from '../../helper/validate';
 
 import { useAuthStore } from '../../store/store.js';
-
-// import * as api from '../../helper/helper.js';
+import { loginUser } from '../../helper/helper.js';
 
 
 export default function Username() {
-    const [msg, setMsg] = useState("");
-    const [token, setToken] = useState("");
     const navigate = useNavigate();
 
     // access username from every components
@@ -36,20 +32,22 @@ export default function Username() {
             setUsername(values.username);
             const username = values.username;
             const password = values.password;
+
             axios.post('http://localhost:8000/seller/login', { username, password })
             .then((res) => {
                 console.log(res);
-                setToken(res.data.token);
-                setMsg(res.data.msg);
+                const token = res.data.token;
+                const msg = res.data.msg;
                 if (token !== '') {
+                    localStorage.setItem('token', token);
                     toast.success(msg);
                     navigate('/addfood');
                 }
-                // return Promise.resolve({ data });
             }).catch(error => {
+                console.log(error);
                 const errorMsg = error.response.data.error;
                 toast.error(errorMsg);
-                console.log(errorMsg);
+                // console.log(errorMsg);
             });
            
         }

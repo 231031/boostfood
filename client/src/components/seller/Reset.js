@@ -1,14 +1,31 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 // error display handlers
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 // use with form handlers
 import { useFormik } from 'formik';
-import { resetPasswordValidate } from '../../helper/validate';
 
+import { resetPasswordValidate } from '../../helper/validate';
+import { useAuthStore } from '../../store/store';
+import  useFetch  from '../../hooks/fetch.hook';
+import { resetPassword } from '../../helper/helper';
 
 export default function Reset() {
+
+    const navigate = useNavigate();
+    let { username } = useAuthStore(state => state.auth) || '';
+
+    // handle refresh
+    if (username !== '') localStorage.setItem('username', username);
+    else if (username === '') username = localStorage.getItem('username');
+    
+
+    // request to createResetSession then request to reset
+    // console.log('createResetSessions');
+    const [{ isLoading, apiData, status, serverError }] = useFetch('createResetSessions');
+
 
     const formik = useFormik({
         initialValues : {
@@ -20,8 +37,34 @@ export default function Reset() {
         validateOnChange : false,
         onSubmit : async values => {
             console.log(values);
+            const resetPromise = resetPassword({ username, password : values.password });
+            toast.promise(resetPromise, {
+                loading : 'Updating...',
+                success : 'Update Successfully',
+                error : 'Update Failed'
+            })
+
+            resetPromise
+            .then((res) => {
+                localStorage.removeItem('username');
+                navigate('/login');
+            })
+            .catch((error) => {
+                localStorage.removeItem('username');
+                console.log(error);
+                // toast.error(error);
+            })
         }
-    })
+
+    });
+
+    if(status && status !== 201) return navigate('/register');
+    if(isLoading) return <h1 className='text-2xl font-bold'>isLoading</h1>;
+    if(serverError) return <h1 className='text-xl text-red-500'>{serverError.message}</h1>
+    // if(status && status !== 201) return <Navigate to={'/login'} replace={true}></Navigate>
+
+    
+
   return (
     <div className='container mx-auto'>
         <Toaster position='top-center' reverseOrder={false}></Toaster>

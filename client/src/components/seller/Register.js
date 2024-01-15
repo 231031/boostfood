@@ -10,7 +10,7 @@ import { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import { registerValidate } from '../../helper/validate';
 
-// import style from '../../style/Username.module.css'
+import { registerUser } from '../../helper/helper.js';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -29,16 +29,26 @@ export default function Register() {
         validateOnChange : false,
         onSubmit : async values => {
             // console.log(values);
-            axios.post('http://localhost:8000/seller/register', values)
-            .then(res => {
-                console.log('Seller register successful');
-                toast.success('Register successful');
-                navigate("/login");
-            }).catch((error)=> {
-                const errorMsg = error.response.data.error.error;
-                toast.error(errorMsg);
-                // console.log('Error post method' + ' ' + error.response.data.error.error);
+            const registerPromise = registerUser(values);
+            toast.promise(registerPromise, {
+                loading : 'Creating...',
+                success : 'Successfully registered',
+                error : 'Wrong registration'
             })
+            registerPromise
+            .then(function(){ navigate('/login')})
+            .catch((error) => { toast.error(error.response.data.error.error)})
+            // await axios.post('http://localhost:8000/seller/register', values)
+            // .then(res => {
+            //     console.log('Seller register successful');
+            //     toast.success('Register successful');
+            //     navigate("/login");
+            // }).catch((error)=> {
+            //     console.log(error);
+            //     const errorMsg = error.response.data.error.error;
+            //     toast.error(errorMsg);
+            //     // console.log('Error post method' + ' ' + error.response.data.error.error);
+            // })
         }
     })
   return (
