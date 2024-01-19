@@ -1,15 +1,6 @@
 import axios from 'axios';
-import toast from 'react-hot-toast';
 import {jwtDecode} from 'jwt-decode';
-// import { useNavigate } from 'react-router-dom';
 
-axios.defaults.baseURL = process.env.APP_SERVER_DOMAIN;
-
-// function userLogout() {
-//     const navigate = useNavigate();
-//     localStorage.removeItem('token');
-//     navigate('/');
-// }
 
 export async function getUsername() {
 
@@ -19,12 +10,13 @@ export async function getUsername() {
     }
 
     let decode = jwtDecode(token);
+    console.log(decode);
     return decode;
 }
 
 export async function authenticate(username) {
     try {
-        return await axios.post('seller/register', { username });
+        return await axios.post('http://localhost:8000/seller/register', { username });
     } catch (err) {
         return { err : err };
     }
@@ -81,7 +73,7 @@ export async function loginUser({ username, password }) {
 export async function updateUser(information) {
     try {
         const token = localStorage.getItem(token);
-        const data = await axios.put('seller/updateUser', information, { headers : {"Authorization": `Bearer ${token}`}});
+        const data = await axios.put('http://localhost:8000/seller/updateUser', information, { headers : {"Authorization": `Bearer ${token}`}});
 
         return Promise.resolve({data});
     } catch (error) {
@@ -107,7 +99,7 @@ export async function generateOTP({ username }) {
 
 export async function verifyOTP({ username, code }) {
     try {
-        const { data, status } = await axios.get('seller/verifyOTP', { params : { username, code }});
+        const { data, status } = await axios.get('http://localhost:8000/seller/verifyOTP', { params : { username, code }});
         return {data, status };
     } catch (error) {
         return Promise.reject({ error });

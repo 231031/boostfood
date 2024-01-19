@@ -13,7 +13,12 @@ import { registerValidate } from '../../helper/validate';
 import { registerUser } from '../../helper/helper.js';
 
 export default function Register() {
+
     const navigate = useNavigate();
+    const token = localStorage.getItem('token') || '';
+    if (token === '') navigate('/homeseller');
+
+    
     const formik = useFormik({
         initialValues : {
             firstName : '',
@@ -28,7 +33,6 @@ export default function Register() {
         validateOnBlur : false,
         validateOnChange : false,
         onSubmit : async values => {
-            // console.log(values);
             const registerPromise = registerUser(values);
             toast.promise(registerPromise, {
                 loading : 'Creating...',
@@ -38,17 +42,6 @@ export default function Register() {
             registerPromise
             .then(function(){ navigate('/login')})
             .catch((error) => { toast.error(error.response.data.error.error)})
-            // await axios.post('http://localhost:8000/seller/register', values)
-            // .then(res => {
-            //     console.log('Seller register successful');
-            //     toast.success('Register successful');
-            //     navigate("/login");
-            // }).catch((error)=> {
-            //     console.log(error);
-            //     const errorMsg = error.response.data.error.error;
-            //     toast.error(errorMsg);
-            //     // console.log('Error post method' + ' ' + error.response.data.error.error);
-            // })
         }
     })
   return (

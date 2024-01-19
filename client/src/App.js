@@ -8,6 +8,8 @@ import Recover from './components/seller/Recover';
 import Pagenotfound from './components/Pagenotfound';
 import Reset from './components/seller/Reset';
 import Addfood from './components/seller/Addfood';
+import Addingredient from './components/seller/Addingredient';
+import Homeseller from './components/seller/Homeseller';
 
 // auth middleware
 import { AuthorizeUser } from './middleware/auth';
@@ -35,9 +37,17 @@ const router =createBrowserRouter(
       element : <AuthorizeUser><Addfood /></AuthorizeUser>
     },
     {
+      path: '/addingredient',
+      element : <AuthorizeUser><Addingredient /></AuthorizeUser>
+    },
+    {
       path: '*',
       element : <Pagenotfound></Pagenotfound>
     },
+    {
+      path: '/homeseller',
+      element : <AuthorizeUser><Homeseller/></AuthorizeUser>
+    }
   ]
 )
 function App() {

@@ -11,9 +11,8 @@ export default function useFetch (query) {
                 setData(prev => ({ ...prev, isLoading : true }));
     
                 const { username } = !query? await getUsername() : '';
-    
                 const { data, status } = !query? await axios.get(`http://localhost:8000/seller/user/${username}`) : await axios.get(`http://localhost:8000/seller/${query}`);
-                console.log(data);
+
                 
                 if (status === 201) {
                     setData(prev => ({ ...prev, isLoading : false }));
@@ -26,7 +25,6 @@ export default function useFetch (query) {
                 setData(prev => ({ ...prev, isLoading : true, serverError : error, status : 440 }));
             }
         };
-    console.log('createResetSessions');
         fetchData();
         // console.log("fetch data" + getData);
     }, [query]);

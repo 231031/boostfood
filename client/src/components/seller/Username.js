@@ -15,11 +15,12 @@ import { loginUser } from '../../helper/helper.js';
 export default function Username() {
     const navigate = useNavigate();
 
+    // const token = localStorage.getItem('token') || '';
+    // if (token === '') navigate('/homeseller');
+
     // access username from every components
     const setUsername = useAuthStore(state => state.setUsername);
     
-
-
     const formik = useFormik({
         initialValues : {
             username : '',
@@ -44,7 +45,7 @@ export default function Username() {
                     navigate('/addfood');
                 }
             }).catch(error => {
-                console.log(error);
+                // console.log(error);
                 const errorMsg = error.response.data.error;
                 toast.error(errorMsg);
                 // console.log(errorMsg);

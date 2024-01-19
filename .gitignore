@@ -4,6 +4,7 @@
 client/node_modules
 server/node_modules
 server/config.js
+client/src/config.js
 client/.env
 server/.env
 

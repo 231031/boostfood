@@ -28,6 +28,12 @@ export async function addFoodValidate (values) {
     return errors;
 }
 
+export async function addIngredientValidate (values) {
+    const errors = addIngredientVerify({}, values);
+
+    return errors;
+}
+
 //  validate username and password
 function usernameVerify (error = {},  values) {
     if (!values.username) {
@@ -54,7 +60,7 @@ function passwordVerify (error = {},  values) {
 }
 
 function registerVerify (error = {},  values) {
-    if (!values.email && !values.tel && !values.fistName && !values.lastName) {
+    if (!values.email || !values.tel || !values.fistName || !values.lastName) {
         error.username = toast.error('All form required to filed');
     } else if (
     (values.email && values.email.includes(" ")) ||
@@ -69,7 +75,19 @@ function registerVerify (error = {},  values) {
 }
 
 function addFoodVerify (error = {},  values) {
+    if (!values.foodname || !values.price || !values.discountedPrice || !values.stock) {
+        error.username = toast.error('All form required to filed');
+    }
+    if (!values.category) error.category = toast.error('Category Required');
+ 
+    return error;
+}
 
+function addIngredientVerify (error = {},  values) {
+    if (!values.ingredientname || !values.price || !values.discountedPrice || !values.stock) {
+        error.ingredientname = toast.error('All form required to filed');
+    }
+    if (!values.category) error.category = toast.error('Category Required');
  
     return error;
 }
