@@ -8,7 +8,8 @@ import env from '../config.js';
 export async function getProduct(username) {
 
     try {
-        const { data : {foodList, ingredientList} } = await axios.get(`http://localhost:8000/seller/getProduct/${username}`, { params : { username }});
+        const token = localStorage.getItem('token');
+        const { data : {foodList, ingredientList} } = await axios.get(`http://localhost:8000/seller/getProduct/${username}`, { headers : { "authorization" : `Bearer ${token}`}});
         return Promise.resolve({ foodList , ingredientList });
 
     } catch (error) {
@@ -20,8 +21,9 @@ export async function getProduct(username) {
 export async function addFood({username, foodDetail}) {
 
     try {
+        const token = localStorage.getItem('token');
         console.log(foodDetail);
-        const { data : { msg }, status } = await axios.post(`http://localhost:8000/seller/addFood/${username}`, { params : { username }, foodDetail});
+        const { data : { msg }, status } = await axios.post(`http://localhost:8000/seller/addFood/${username}`, foodDetail, { headers : { "authorization" : `Bearer ${token}`}});
         return Promise.resolve(msg);
 
     } catch (error) {
@@ -33,7 +35,8 @@ export async function addFood({username, foodDetail}) {
 export async function addIngredient({username, ingredientDetail}) {
 
     try {
-        const { data : { msg }, status } = await axios.post(`http://localhost:8000/seller/addIngredient/${username}`, { params : { username }, ingredientDetail});
+        const token = localStorage.getItem('token');
+        const { data : { msg }, status } = await axios.post(`http://localhost:8000/seller/addIngredient/${username}`, ingredientDetail, { headers : { "authorization" : `Bearer ${token}`}});
         return Promise.resolve(msg);
 
     } catch (error) {
@@ -69,7 +72,7 @@ export async function updateLocation({ username, location }) {
         const token = localStorage.getItem("token");
         console.log(username);
         console.log(token);
-        const { data : { msg }, status } = await axios.put(`http://localhost:8000/seller/updatelocation/${username}`, location, { headers : { "authorization" : `Bearer ${token}`}, params : { username }});
+        const { data : { msg }, status } = await axios.put(`http://localhost:8000/seller/updatelocation/${username}`, location, { headers : { "authorization" : `Bearer ${token}`}});
     } catch (error) {
         return Promise.reject({ error });
     }

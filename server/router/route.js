@@ -15,15 +15,15 @@ router.route('/register').post(controller.register);
 router.route('/registerMail').post(mailer.sendMail); // send registration email
 router.route('/authenticate').post(middleware.verifyUser, (req,res) => res.end());
 router.route('/login').post(middleware.verifyUser, controller.login);
-router.route('/addFood/:username').post(middleware.verifyUser, sellerController.addFood);
-router.route('/addIngredient/:username').post(middleware.verifyUser, sellerController.addIngredient);
+router.route('/addFood/:username').post(Auth, sellerController.addFood);
+router.route('/addIngredient/:username').post(Auth, sellerController.addIngredient);
 
 // get request
 router.route('/user/:username').get(controller.getUser);
 router.route('/generateOTP').get(middleware.verifyUser, localVariables, controller.generateOTP);
 router.route('/verifyOTP').get(middleware.verifyUser, controller.verifyOTP);
 router.route('/createResetSessions').get(controller.createResetSession); // reset all variables
-router.route('/getProduct/:username').get(middleware.verifyUser, sellerController.getProduct);
+router.route('/getProduct/:username').get(Auth, sellerController.getProduct);
 
 // put request
 router.route('/updateuser').put(Auth, controller.updateUser);

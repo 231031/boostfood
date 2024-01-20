@@ -40,8 +40,7 @@ export async function getIngredient(req, res) {
 }
 
 export async function getProduct(req, res) {
-    const { username } = req.params || req.query;
-    
+    const { username } = req.user;
     try {
         if (!username) return res.status(501).send({ error : "Invalid username" });
         const foodList = await FoodModel.find({ username });
@@ -59,10 +58,10 @@ export async function getProduct(req, res) {
 
 
 export async function addFood(req,res) {
-    const { username } = req.params;
+    const { username } = req.user;
     try {
         if (!username) return res.status(501).send({ error : "Invalid username" });
-        const { foodname, price, discountedPrice, category, stock, pic } = req.body.foodDetail;
+        const { foodname, price, discountedPrice, category, stock, pic } = req.body;
         console.log(req.body);
 
             const food = new FoodModel({
@@ -85,10 +84,10 @@ export async function addFood(req,res) {
 }
 
 export async function addIngredient(req,res) {
-    const { username } = req.params;
+    const { username } = req.user;
     try {
         if (!username) return res.status(501).send({ error : "Invalid username" });
-        const { ingredientname, price, discountedPrice, category, stock, pic } = req.body.ingredientDetail;
+        const { ingredientname, price, discountedPrice, category, stock, pic } = req.body;
             
             const ingredient = new IngredientModel({
                 username,
@@ -111,7 +110,7 @@ export async function addIngredient(req,res) {
 }
 
 export async function updateLocation(req, res) {
-    const { username } = req.params;
+    const { username } = req.user;
     try {
         if (!username) return res.status(501).send({ error : "Invalid username" });
         const { longitude, latitude } = req.body;

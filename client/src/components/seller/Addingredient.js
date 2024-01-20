@@ -78,7 +78,7 @@ export default function Addingredient() {
         </div>
         <div className=' flex flex-col justify-center items-center  h-screen' >
             
-            <div className='bg-lime-500 p-7 rounded-xl drop-shadow-2xl w-4/5'>
+            <div className='bg-blue-300 p-7 rounded-xl drop-shadow-2xl w-4/5'>
                 <div className='title flex flex-col items-center '>
                     <h4 className='text-4xl font-bold'>Boost Food</h4>
                     <span className='py-4 text-xl text-center text-gray-500'>
@@ -105,7 +105,7 @@ export default function Addingredient() {
                             <option value="meat">Meat</option>
                         </select>
                         <input {...formik.getFieldProps('stock')} type='number' placeholder='Stock' className='mt-7 shadow-md rounded-md w-5/6 text-lg'></input><br/>
-                        <button type='submit' className='m-1 p-2 rounded-md shadow-md bg-amber-100 hover:bg-sky-500 w-5/6'>Add Food</button>
+                        <button type='submit' className='m-1 p-2 rounded-md shadow-md bg-amber-100 hover:bg-sky-500 w-5/6'>Add Ingredient</button>
                     </div>
                 </form>
             </div>

@@ -9,6 +9,7 @@ export default async function Auth(req, res, next) {
         // retrieve user details
         const decodedToken = jwt.verify(token, ENV.JWT_SECRET);
         req.user = decodedToken;
+        console.log(req.user);
         next();
 
     } catch (error) {

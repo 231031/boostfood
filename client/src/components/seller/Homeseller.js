@@ -64,13 +64,15 @@ export default function Homeseller() {
     }, [username]);
 
     useEffect(() => {
-        updateLocation({ username : username, location : pos })
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+        if (username) {
+            updateLocation({ username : username, location : pos })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((error) => {
+                console.log(error);
+            })  
+        } 
     }, [pos]);  
 
 
