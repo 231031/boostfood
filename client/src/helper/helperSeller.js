@@ -37,25 +37,42 @@ export async function addIngredient({username, ingredientDetail}) {
         return Promise.resolve(msg);
 
     } catch (error) {
-        console.log(error);
         return Promise.reject({ error });
     }
 }
 
 export async function imageUpload(file) {
-    const cloudName = env.CLOUD_NAME;
-    console.log(cloudName); 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", env.UPLOAD_PRESET);
-    const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-    const res = await response.json();
-    return res.public_id;
+    try {
+        const cloudName = env.CLOUD_NAME;
+        console.log(cloudName); 
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", env.UPLOAD_PRESET);
+        const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+            {
+            method: "POST",
+            body: formData,
+            }
+        );
+        const res = await response.json();
+        return res.public_id;
+    } catch (error) {
+        return Promise.reject({ error });
+    }
+    
    
 }
+
+export async function updateLocation({ username, location }) {
+    try {
+        const token = localStorage.getItem("token");
+        console.log(username);
+        console.log(token);
+        const { data : { msg }, status } = await axios.put(`http://localhost:8000/seller/updatelocation/${username}`, location, { headers : { "authorization" : `Bearer ${token}`}, params : { username }});
+    } catch (error) {
+        return Promise.reject({ error });
+    }
+
+}
+

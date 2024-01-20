@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from "react-hot-toast"; // handles warning messages
@@ -15,10 +15,15 @@ import { registerUser } from '../../helper/helper.js';
 export default function Register() {
 
     const navigate = useNavigate();
-    const token = localStorage.getItem('token') || '';
-    if (token === '') navigate('/homeseller');
+    // const token = localStorage.getItem('token');
+    // console.log(token);
 
     
+    // if (token !== '') navigate('/homeseller');
+
+    
+
+
     const formik = useFormik({
         initialValues : {
             firstName : '',
@@ -41,7 +46,10 @@ export default function Register() {
             })
             registerPromise
             .then(function(){ navigate('/login')})
-            .catch((error) => { toast.error(error.response.data.error.error)})
+            .catch((error) => { 
+                if (error.response) {
+                    toast.error(error.response.data.error.error)}
+                })
         }
     })
   return (

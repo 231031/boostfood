@@ -6,7 +6,6 @@ import { useFormik } from 'formik';
 import convertToBase64 from '../../helper/convert';
 import { addFoodValidate } from '../../helper/validate';
 import { addFood, imageUpload } from '../../helper/helperSeller.js';
-import { getUsername } from '../../helper/helper.js';
 import uploadFood from '../../assets/uploadFood.png';
 import useFetch from '../../hooks/fetch.hook.js';
 
@@ -18,8 +17,9 @@ export default function Addfood() {
     // get user data
     const [{ isLoading, apiData, status, serverError }] = useFetch();
     const navigate = useNavigate();
-
     const [file, setFile] = useState();
+
+
     const formik = useFormik({
         initialValues : {
             foodname : '',

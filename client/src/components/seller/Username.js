@@ -42,12 +42,15 @@ export default function Username() {
                 if (token !== '') {
                     localStorage.setItem('token', token);
                     toast.success(msg);
-                    navigate('/addfood');
+                    navigate('/homeseller');
                 }
             }).catch(error => {
-                // console.log(error);
-                const errorMsg = error.response.data.error;
-                toast.error(errorMsg);
+                console.log(error);
+                if (error.response) {
+                    const errorMsg = error.response.data.error;
+                    toast.error(errorMsg);
+                }
+               
                 // console.log(errorMsg);
             });
            

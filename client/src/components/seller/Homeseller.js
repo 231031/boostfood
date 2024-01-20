@@ -6,7 +6,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '../../store/store';
 import  useFetch  from '../../hooks/fetch.hook';
 import { getUsername } from '../../helper/helper';
-import { getProduct } from '../../helper/helperSeller';
+import { getProduct, updateLocation } from '../../helper/helperSeller';
 import env from '../../config.js';
 
 import foodicon from '../../assets/foodicon.png';
@@ -23,7 +23,7 @@ export default function Homeseller() {
     const [ingredientList, setIngredientList] = useState({});
     const [haveFood, setHaveFood] = useState(false);
     const [haveIngredient, setHaveIngredient] = useState(false);
-
+    const [pos, setPos] = useState({ latitude: null, longitude: null });
 
     // get username from token and get data
     const [{ isLoading, apiData, serverError, status }] = useFetch();
@@ -52,7 +52,26 @@ export default function Homeseller() {
                     if (error.response) toast.error(error.response.data.error);
                 });
         }
+
+        if ("geolocation" in navigator && username) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                setPos({latitude : position.coords.latitude, longitude : position.coords.longitude});
+            });
+        } else {
+            console.log("geolocation IS NOT available");
+        }
+
     }, [username]);
+
+    useEffect(() => {
+        updateLocation({ username : username, location : pos })
+        .then((res) => {
+            console.log(res);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+    }, [pos]);  
 
 
     function userLogout() {

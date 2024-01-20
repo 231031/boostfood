@@ -1,4 +1,4 @@
-// import SellerModel from '../model/seller/Seller.model.js'
+import SellerModel from '../model/seller/Seller.model.js'
 import FoodModel from '../model/seller/Food.model.js'
 import IngredientModel from '../model/seller/Ingredient.model.js';
             
@@ -109,6 +109,35 @@ export async function addIngredient(req,res) {
         return res.status(404).send(error);
     }
 }
+
+export async function updateLocation(req, res) {
+    const { username } = req.params;
+    try {
+        if (!username) return res.status(501).send({ error : "Invalid username" });
+        const { longitude, latitude } = req.body;
+        console.log(username, longitude, latitude);
+
+        SellerModel.updateOne({ username : username },{ 
+            $set: { location: {
+                type: 'Point',
+                coordinates: [longitude, latitude], 
+            }}}
+        )
+        .then((data) => {
+            console.log(data);
+            return res.status(201).send({ msg: 'Location updated successfully'});
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.status(500).send({ error: error.message });
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(404).send(error);
+    }
+}
+
 
 
             

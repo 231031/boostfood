@@ -27,6 +27,7 @@ router.route('/getProduct/:username').get(middleware.verifyUser, sellerControlle
 
 // put request
 router.route('/updateuser').put(Auth, controller.updateUser);
+router.route('/updatelocation/:username').put(Auth, sellerController.updateLocation);
 
 // create reset session check before redirect to this path
 router.route('/resetPassword').put(middleware.verifyUser, controller.resetPassword);

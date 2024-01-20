@@ -60,9 +60,11 @@ function passwordVerify (error = {},  values) {
 }
 
 function registerVerify (error = {},  values) {
-    if (!values.email || !values.tel || !values.fistName || !values.lastName) {
-        error.username = toast.error('All form required to filed');
-    } else if (
+    if (!values.email ) error.email = toast.error('Email required to filed');
+    if (!values.tel) error.tel = toast.error('Telephone required to filed');
+    if (values.fistName === '') error.fistName = toast.error('First Name required to filed');
+    if (!values.lastName) error.lastName = toast.error('Last Name required to filed');
+    else if (
     (values.email && values.email.includes(" ")) ||
     (values.fistName && values.fistName.includes(" ")) ||
     (values.lastName && values.lastName.includes(" "))) {

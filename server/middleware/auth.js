@@ -5,11 +5,10 @@ export default async function Auth(req, res, next) {
     try {
         // access authorize header to validate request
         const token = req.headers.authorization.split(" ")[1];
-
+        
         // retrieve user details
         const decodedToken = jwt.verify(token, ENV.JWT_SECRET);
         req.user = decodedToken;
-        res.json(decodedToken);
         next();
 
     } catch (error) {
