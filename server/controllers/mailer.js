@@ -67,7 +67,7 @@ export async function sendMail(req, res) {
         body : {
             body : {
                 name: userEmail,
-                intro : text || 'Welcome to Daily Tuition! We\'re very excited to have you on board.',
+                intro : text || 'Welcome to Boost Food We\'re very excited to have you on board.',
                 outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
             }
         }
@@ -84,8 +84,8 @@ export async function sendMail(req, res) {
     .then(() => {
         return res.status(201).send({ msg : "Mail already send" });
     })
-    .catch(err => {
-        console.log(err);
-        return res.status(500).send({ err });
+    .catch(error => {
+        console.log(error);
+        return res.status(500).send({error});
     });
 }

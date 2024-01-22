@@ -14,13 +14,13 @@ export async function getUsername() {
     return decode;
 }
 
-export async function authenticate(username) {
-    try {
-        return await axios.post('http://localhost:8000/seller/register', { username });
-    } catch (err) {
-        return { err : err };
-    }
-}
+// export async function authenticate(username) {
+//     try {
+//         return await axios.post('http://localhost:8000/seller/register', { username });
+//     } catch (err) {
+//         return { err : err };
+//     }
+// }
 
 export async function getUser({ username }) {
     try {
@@ -93,6 +93,7 @@ export async function generateOTP({ username }) {
         }
         return Promise.resolve(code);
     } catch (error) {
+        console.log(error);
         return Promise.reject({ error });
     }
 }

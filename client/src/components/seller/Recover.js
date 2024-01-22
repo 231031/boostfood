@@ -25,12 +25,12 @@ export default function Recover() {
             console.log(OTP)
             if(OTP) toast.success('OTP has been send to your email!'); 
         })
-        .catch((error) => {
-            console.error(error);
-            if (error.error) {
-                const errorMessage = error.error.response.data.error;
-                toast.error(errorMessage);
-              }
+        .catch(({error}) => {
+            if (error.response) {
+                const errorMessage = error.response.data.error;
+                if (typeof errorMessage !== 'object')   toast.error(errorMessage);
+            }
+
         });
     }
 
@@ -54,8 +54,8 @@ export default function Recover() {
             }).catch((error)=> {
                 console.log(error);
                 if (error.response) {
-                    const errorMsg = error.response.data.error;
-                    toast.error(errorMsg);
+                    const errorMessage = error.response.data.error;
+                if (typeof errorMessage !== 'object')   toast.error(errorMessage)
                 }
                 
                 // console.log('Error post method' + ' ' + error.response.data.error.error);

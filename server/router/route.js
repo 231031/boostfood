@@ -6,14 +6,14 @@ import * as sellerController from '../controllers/sellerController.js';
 import * as mailer from '../controllers/mailer.js';
 
 // import middlewares
-import * as middleware from '../middleware/middlewareSeller.js';
+import * as middleware from '../middleware/middleware.js';
 import Auth, { localVariables } from '../middleware/auth.js';
 const router = Router();
 
 // post request
 router.route('/register').post(controller.register);
 router.route('/registerMail').post(mailer.sendMail); // send registration email
-router.route('/authenticate').post(middleware.verifyUser, (req,res) => res.end());
+// router.route('/authenticate').post(middleware.verifyUser, (req,res) => res.end());
 router.route('/login').post(middleware.verifyUser, controller.login);
 router.route('/addFood/:username').post(Auth, sellerController.addFood);
 router.route('/addIngredient/:username').post(Auth, sellerController.addIngredient);

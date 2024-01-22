@@ -19,6 +19,15 @@ export async function registerValidate (values) {
     const errors = usernameVerify({}, values);
     passwordVerify(errors, values);
     registerVerify(errors, values);
+    if (!values.storename || values.storename.includes(" "))
+        errors.storename = toast.error("Store Name Required");
+    return errors;
+}
+
+export async function registerBuyerValidate (values) {
+    const errors = usernameVerify({}, values);
+    passwordVerify(errors, values);
+    registerVerify(errors, values);
     return errors;
 }
 
@@ -62,7 +71,7 @@ function passwordVerify (error = {},  values) {
 function registerVerify (error = {},  values) {
     if (!values.email ) error.email = toast.error('Email required to filed');
     if (!values.tel) error.tel = toast.error('Telephone required to filed');
-    if (values.fistName === '') error.fistName = toast.error('First Name required to filed');
+    if (!values.firstName) error.fistName = toast.error('First Name required to filed');
     if (!values.lastName) error.lastName = toast.error('Last Name required to filed');
     else if (
     (values.email && values.email.includes(" ")) ||

@@ -174,7 +174,11 @@ export async function verifyOTP(req, res) {
     // code is OTP from user input
     if (parseInt(req.app.locals.OTP) === parseInt(code)) {
         req.app.locals.OTP = null;
-        req.app.locals.resetSession = true;
+        // req.app.locals.resetSession = true;
+        req.app.locals.resetSession = {
+            value: true,
+            expirationTime: Date.now() + 180000, // 3 minutes in milliseconds
+        };
         return res.status(201).send({ msg : "Verify Success" });
     }
     return res.status(400).send({ error : "Invalid OTP" });
@@ -220,7 +224,13 @@ export async function updateUser(req, res) {
 export async function resetPassword(req, res) {
     try {
 
-        if (!req.app.locals.resetSession) return res.status(440).send({ error : "Session Expired" });
+        // if (!req.app.locals.resetSession.value) return res.status(440).send({ error : "Session Expired" });
+
+        // resetSession has expired
+        if (req.app.locals.resetSession && req.app.locals.resetSession.expirationTime < Date.now()) {
+            req.app.locals.resetSession.value = false;
+            return res.status(440).send({ error : "Session Expired" });
+        }
     
         const { username, password } = req.body;
         try {
@@ -228,7 +238,7 @@ export async function resetPassword(req, res) {
             .then((user) => { 
                 bcrypt.hash(password, 10)
                 .then(hashed => {
-                    req.app.locals.resetSession = false;
+                    req.app.locals.resetSession.value = false;
                     SellerModel.updateOne({ username : user.username }, { password : hashed })
                     .then((data) => {
                         return res.status(201).send({ msg : "Password Updated" });

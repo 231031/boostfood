@@ -61,6 +61,8 @@ export const SellerSchema = new mongoose.Schema({
         type: Object,
         default: 0
     }
+}, {
+    timestamps : true,
 });
 
 export default mongoose.model.Sellers || mongoose.model('Seller', SellerSchema);

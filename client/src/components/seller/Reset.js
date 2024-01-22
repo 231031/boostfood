@@ -36,12 +36,11 @@ export default function Reset() {
         validateOnBlur : false,
         validateOnChange : false,
         onSubmit : async values => {
-            console.log(values);
             const resetPromise = resetPassword({ username, password : values.password });
             toast.promise(resetPromise, {
                 loading : 'Updating...',
                 success : 'Update Successfully',
-                error : 'Update Failed'
+                error : 'Session Expired'
             })
 
             resetPromise
@@ -49,10 +48,9 @@ export default function Reset() {
                 localStorage.removeItem('username');
                 navigate('/login');
             })
-            .catch((error) => {
+            .catch(({error}) => {
                 localStorage.removeItem('username');
-                console.log(error);
-                // toast.error(error);
+                navigate('/login');
             })
         }
 
