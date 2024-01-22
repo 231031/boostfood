@@ -11,10 +11,17 @@ import Addfood from './components/seller/Addfood';
 import Addingredient from './components/seller/Addingredient';
 import Homeseller from './components/seller/Homeseller';
 
+// import buyer component
+import Registerbuyer from './components/buyer/Registerbuyer';
+import Loginbuyer from './components/buyer/Loginbuyer';
+import Homebuyer from './components/buyer/Homebuyer';
+
+
 // auth middleware
 import { AuthorizeUser } from './middleware/auth';
+
 // root routes
-const router =createBrowserRouter(
+const router = createBrowserRouter(
   [
     {
       path: '/login',
@@ -47,6 +54,18 @@ const router =createBrowserRouter(
     {
       path: '/homeseller',
       element : <AuthorizeUser><Homeseller/></AuthorizeUser>
+    },
+    {
+      path: '/buyer/register',
+      element : <Registerbuyer></Registerbuyer>
+    },
+    {
+      path: '/buyer/login',
+      element : <Loginbuyer></Loginbuyer>
+    },
+    {
+      path: '/buyer/homebuyer',
+      element : <Homebuyer></Homebuyer>
     }
   ]
 )

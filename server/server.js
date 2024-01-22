@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 
 import router from './router/route.js';
+import routerBuyer from './router/routeBuyer.js';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get('/', (req,res) => {
 })
 
 app.use('/seller', router);
+app.use('/buyer', routerBuyer);
 
 // start server only when have valid connection
 connect().then(() => {
