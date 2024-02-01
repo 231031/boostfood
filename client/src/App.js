@@ -15,7 +15,10 @@ import Homeseller from './components/seller/Homeseller';
 import Registerbuyer from './components/buyer/Registerbuyer';
 import Loginbuyer from './components/buyer/Loginbuyer';
 import Homebuyer from './components/buyer/Homebuyer';
-
+import Recoverbuyer from './components/buyer/Recoverbuyer';
+import Resetbuyer from './components/buyer/Resetbuyer';
+import Foodbuyer from './components/buyer/Foodbuyer';
+import Ingredientbuyer from './components/buyer/Ingredientbuyer';
 
 // auth middleware
 import { AuthorizeUser } from './middleware/auth';
@@ -64,8 +67,24 @@ const router = createBrowserRouter(
       element : <Loginbuyer></Loginbuyer>
     },
     {
+      path: '/buyer/recover',
+      element : <Recoverbuyer></Recoverbuyer>
+    },
+    {
+      path : '/buyer/reset',
+      element : <Resetbuyer></Resetbuyer>
+    },
+    {
       path: '/buyer/homebuyer',
-      element : <Homebuyer></Homebuyer>
+      element : <AuthorizeUser><Homebuyer /></AuthorizeUser>
+    },
+    {
+      path : '/buyer/foodlists',
+      element : <AuthorizeUser><Foodbuyer /></AuthorizeUser>
+    },
+    {
+      path : '/buyer/ingredientlists',
+      element : <AuthorizeUser><Ingredientbuyer /></AuthorizeUser>
     }
   ]
 )

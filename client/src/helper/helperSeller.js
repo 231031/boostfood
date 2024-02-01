@@ -23,7 +23,7 @@ export async function addFood({username, foodDetail}) {
     try {
         const token = localStorage.getItem('token');
         console.log(foodDetail);
-        const { data : { msg }, status } = await axios.post(`http://localhost:8000/seller/addFood/${username}`, foodDetail, { headers : { "authorization" : `Bearer ${token}`}});
+        const { data : { msg }} = await axios.post(`http://localhost:8000/seller/addFood/${username}`, foodDetail, { headers : { "authorization" : `Bearer ${token}`}});
         return Promise.resolve(msg);
 
     } catch (error) {
@@ -36,7 +36,7 @@ export async function addIngredient({username, ingredientDetail}) {
 
     try {
         const token = localStorage.getItem('token');
-        const { data : { msg }, status } = await axios.post(`http://localhost:8000/seller/addIngredient/${username}`, ingredientDetail, { headers : { "authorization" : `Bearer ${token}`}});
+        const { data : { msg }} = await axios.post(`http://localhost:8000/seller/addIngredient/${username}`, ingredientDetail, { headers : { "authorization" : `Bearer ${token}`}});
         return Promise.resolve(msg);
 
     } catch (error) {
@@ -72,7 +72,8 @@ export async function updateLocation({ username, location }) {
         const token = localStorage.getItem("token");
         console.log(username);
         console.log(token);
-        const { data : { msg }, status } = await axios.put(`http://localhost:8000/seller/updatelocation/${username}`, location, { headers : { "authorization" : `Bearer ${token}`}});
+        const { data : { msg }} = await axios.put(`http://localhost:8000/seller/updatelocation/${username}`, location, { headers : { "authorization" : `Bearer ${token}`}});
+        return Promise.resolve(msg);
     } catch (error) {
         return Promise.reject({ error });
     }

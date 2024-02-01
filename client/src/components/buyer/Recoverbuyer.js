@@ -9,7 +9,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 
 import { useAuthStore } from '../../store/store';
-import { generateOTP } from '../../helper/helper.js';
+import { generateOTP } from '../../helper/helperBuyer.js';
 
 
 export default function Recoverbuyer() {
@@ -25,12 +25,12 @@ export default function Recoverbuyer() {
             console.log(OTP)
             if(OTP) toast.success('OTP has been send to your email!'); 
         })
-        .catch((error) => {
-            console.error(error);
-            if (error.error) {
-                const errorMessage = error.error.response.data.error;
-                toast.error(errorMessage);
-              }
+        .catch(({error}) => {
+            // console.error(error);
+            if (error.response) {
+                const errorMessage = error.response.data.error;
+                if (typeof errorMessage !== 'object')   toast.error(errorMessage);
+            }
         });
     }
 
@@ -54,8 +54,8 @@ export default function Recoverbuyer() {
             }).catch((error)=> {
                 console.log(error);
                 if (error.response) {
-                    const errorMsg = error.response.data.error;
-                    toast.error(errorMsg);
+                    const errorMessage = error.response.data.error;
+                if (typeof errorMessage !== 'object')   toast.error(errorMessage)
                 }
                 
                 // console.log('Error post method' + ' ' + error.response.data.error.error);
@@ -68,7 +68,7 @@ export default function Recoverbuyer() {
         <Toaster position='top-center' reverseOrder={false}></Toaster>
         <div className='bg-cover flex justify-center items-center h-screen' style={{ 
       backgroundImage: `url("https://wallpapercave.com/wp/wp9443731.jpg")`}}>
-            <div className='bg-sky-500 p-7 rounded-xl drop-shadow-2xl w-3/4'>
+            <div className='bg-sky-700 p-7 rounded-xl drop-shadow-2xl w-3/4'>
                 <div className='title flex flex-col items-center '>
                     <h4 className='text-2xl font-bold'>Recover Password</h4>
                     <span className='py-4 text-center text-gray-300 text-sm'>
@@ -89,7 +89,7 @@ export default function Recoverbuyer() {
 
                 <form className='py-2' onSubmit={verify.handleSubmit}>
                     <div className='textbox flex flex-col justify-center items-center'>
-                        <span className='text-gray-500'>
+                        <span className='text-gray-300'>
                             Enter 6 digits OTP
                         </span>
                         <input {...verify.getFieldProps('OTP')} type='number' placeholder='OTP'  className='shadow-md rounded-md w-5/6 text-lg'></input><br/>
@@ -97,7 +97,7 @@ export default function Recoverbuyer() {
                     </div>
                 </form>
                 <div className='text-center mt-4'>
-                    <span className='text-gray-500'>Can't get OTP <button onClick={(e) => onSubmitUser(e)} className='text-red-500 cursor-pointer'>Resend</button></span><br/>
+                    <span className='text-gray-300'>Can't get OTP <button onClick={(e) => onSubmitUser(e)} className='text-red-500 cursor-pointer'>Resend</button></span><br/>
                 </div>
             </div>
             

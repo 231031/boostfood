@@ -47,8 +47,8 @@ export default function Loginbuyer() {
             }).catch(error => {
                 console.log(error);
                 if (error.response) {
-                    const errorMsg = error.response.data.error;
-                    toast.error(errorMsg);
+                    const errorMessage = error.response.data.error;
+                    if (typeof errorMessage !== 'object')   toast.error(errorMessage);
                 }
                
                 // console.log(errorMsg);

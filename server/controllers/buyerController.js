@@ -1,8 +1,13 @@
-import BuyerModel from '../model/buyer/Buyer.model.js'
 import bcrypt, { hash } from 'bcrypt';
 import ENV from '../config.js';
 import jwt from 'jsonwebtoken';
 import otpGenerator from 'otp-generator';
+
+import BuyerModel from '../model/buyer/Buyer.model.js'
+import SellerModel from '../model/seller/Seller.model.js'
+import FoodModel from '../model/seller/Food.model.js'
+import IngredientModel from '../model/seller/Ingredient.model.js';
+
 
 export async function register(req, res) {
     try {
@@ -110,4 +115,120 @@ export async function login(req, res) {
     } catch (error) {
        return res.status(400).send({ error });
     }
+}
+
+export async function getBuyer(req, res) {
+    const { username } = req.params;
+    try {
+        if (!username) return res.status(501).send({ error : "Invalid username" });
+        BuyerModel.findOne({ username })
+        .then((user) => {
+            if(!user) return res.status(501).send({ error : "User not found" });
+
+            // remove password from object 
+            // mongoose return data with object convert into json
+            const { password, ...rest } = Object.assign({}, user.toJSON());
+            return res.status(201).send(rest);
+
+        }).catch((error) => {
+            return res.status(500).send({ error : error.message });
+        })
+    } catch (error) {
+        return res.status(404).send({ error: error.message });    
+    }
+}
+
+export async function resetPasswordBuyer(req,res) {
+    try {
+        // resetSession has expired
+        if (req.app.locals.resetSession && req.app.locals.resetSession.expirationTime < Date.now()) {
+            req.app.locals.resetSession.value = false;
+            return res.status(440).send({ error : "Session Expired" });
+        }
+    
+        const { username, password } = req.body;
+        try {
+            BuyerModel.findOne({ username })
+            .then((user) => { 
+                bcrypt.hash(password, 10)
+                .then(hashed => {
+                    req.app.locals.resetSession.value = false;
+                    BuyerModel.updateOne({ username : user.username }, { password : hashed })
+                    .then((data) => {
+                        return res.status(201).send({ msg : "Password Updated" });
+                    })
+                    .catch((error) => {
+                        return res.status(error.statusCode).send({ error });
+                    });
+                })
+                .catch((error) => {
+                    return res.status(500).send({ error });
+                });
+            })
+            .catch((error) => {
+                return res.status(404).send({ error });
+            })
+        } catch (error) {
+            return res.status(500).send({ error });
+        }
+    } catch (error) {
+        return res.status(401).send({ error });
+    }
+}
+
+// TODO: 
+export async function updateLocation(req, res) {
+    const { username } = req.user;
+    try {
+        if (!username) return res.status(501).send({ error : "Invalid username" });
+        const { longitude, latitude } = req.body;
+        console.log(username, longitude, latitude);
+
+        BuyerModel.updateOne({ username : username },{ 
+            $set: { location: {
+                type: 'Point',
+                coordinates: [longitude, latitude], 
+            }}}
+        )
+        .then((data) => {
+            console.log(data);
+            return res.status(201).send({ msg: 'Location updated successfully'});
+        })
+        .catch((error) => {
+            console.log(error);
+            return res.status(500).send({ error: error.message });
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(404).send(error);
+    }
+}
+
+export async function getNearLocation(req, res) {
+    try {
+        const { longitude, latitude } = req.body;
+        const radius = 3;
+        const center = [longitude, latitude];
+
+        SellerModel.find({
+            location: {
+              $geoWithin: {
+                $centerSphere: [center, radius / 6371] // Earth's radius is approximately 6371 km
+              }
+            }
+          })
+          .then((data) => {
+            return res.status(201).send(data);
+          })
+          .catch((error) => {
+            console.log(error);
+            return res.status(404).send(error);
+          });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(404).send(error);
+    }
+
 }
